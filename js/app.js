@@ -210,6 +210,43 @@ const loadProducts = () => {
   showProducts(data);
 };
 
+// load details from fake api
+const loadDetails = (details) => {
+  const url = `https://fakestoreapi.com/products/${details}`;
+  fetch(url)
+    .then((res) => res.json())
+    .then((data) => showModals(data));
+};
+
+// show details from fake api
+const showModals = (singleProduct) => {
+  const productDiv = document.getElementById("product-details");
+  productDiv.innerHTML = `
+  <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+Click here for product details
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">${singleProduct.title}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ${singleProduct.description}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+  `;
+};
+
 // show all product in UI
 const showProducts = (products) => {
   const allProducts = products.map((pd) => pd);
@@ -217,15 +254,18 @@ const showProducts = (products) => {
     const image = product.image;
     const div = document.createElement("div");
     div.classList.add("product");
-    div.innerHTML = `<div class="single-product">
+    div.innerHTML = `<div class="single-product bg-primary text-dark bg-opacity-50">
       <div>
     <img class="product-image" src=${image}></img>
       </div>
       <h3>${product.title}</h3>
-      <p>Category: ${product.category}</p>
+      <p><span class ="fw-bold">Category: </span>${product.category}</p>
+      <p><span class ="fw-bold">Rating: </span>${product.rating.rate}</p>
+      <p><span class ="fw-bold">Total Ratings: </span>${product.rating.count}</p>
       <h2>Price: $ ${product.price}</h2>
       <button onclick="addToCart(${product.id},${product.price})" id="addToCart-btn" class="buy-now btn btn-success">add to cart</button>
-      <button id="details-btn" class="btn btn-danger">Details</button></div>
+      <button onclick="loadDetails(${product.id})" id="details-btn" class="btn btn-danger">Details</button>
+      </div>
       `;
     document.getElementById("all-products").appendChild(div);
   }
